@@ -1,10 +1,12 @@
 
+from collections import OrderedDict
+
 class Agent:
     def __init__(self, uid:int, *args, **kwargs):
         self.id = uid
-        self.init(*args, **kwargs)
+        self.setup(*args, **kwargs)
 
-    def init(*args, **kwargs):
+    def setup(*args, **kwargs):
         pass
 
     def _step(self, context):
@@ -12,6 +14,26 @@ class Agent:
 
     def step(self, context):
         pass
+
+class StagedAgent(Agent):
+    """ An Agent that supports multiple stages per step
+    stages are traversed in order
+    """
+    def __init__(self, uid:int, stages: OrderedDict[str,str] = None, *args, **kwargs):
+        self.stages = stages
+        for stage, method_name in self.stages.items():
+            if not hasattr(self, method_name):
+                raise ValueError(f"{method_name} does not exist in {self.__class__.__name__} for stage {stage}")
+        self.current_stage = self.stages.keys()[0]
+
+        super().__init__(uid, *args, **kwargs)
+
+    def step(self, context):
+        if self.current_stage is None:
+            self.current_stage = self.stages.keys()[0]
+
+        # TODO: step through stages and call functions
+
 
 from threading import Thread
 from queue import Queue

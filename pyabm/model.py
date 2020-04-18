@@ -59,6 +59,10 @@ class Model:
         ''' Return a boolean indicating if execution should stop '''
         pass
 
+    def activate(self):
+        ''' Yield the agents in the order they should be run '''
+        pass
+
     def agents(self):
         return iter(self._agents)
     def agent_data(self):

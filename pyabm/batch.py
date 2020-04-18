@@ -1,12 +1,15 @@
 
 from itertools import product
 from typing import *
+
 from .model import Model
+from .engine import BasicEngine
 
 class Batch:
-    def __init__(self, model:Model,
+    def __init__(self, 
+            model:Model,
             max_steps: int = 100,
-            iterations:int = 5,
+            iterations:int = 1,
             parameters:Dict[str,Any] = { },
             variables:Dict[str, List[Any]] = { },
             agent_data:Dict[str,Callable] = { },
@@ -15,7 +18,7 @@ class Batch:
 
         self.model = model
         self.max_steps = max_steps
-        self.iterations = 5
+        self.iterations = iterations
         self.parameters = parameters
         self.variables = variables
         self.agent_data = agent_data
@@ -29,6 +32,11 @@ class Batch:
             self.run_scenario(scenario)
 
     def run_scenario(self, scenario):
+        for i in range(self.iterations):
+        sim = Simulation(
+                model = self.model,
+                engine = BasicEngine(),
+                # TODO: finish this
 
 
 
