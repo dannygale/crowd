@@ -8,8 +8,7 @@ class Simulation:
 
     def __init__(self, 
             model: Model,
-            engine: Engine = BasicEngine(),
-            activation: Callable = basic_activation,
+            engine: Engine = None,
             steps: int = 10
             ):
 
