@@ -15,7 +15,6 @@ class Engine(ABC):
 
 class BasicEngine(Engine):
     def run(self, model:Model, steps:int = 10):
-        #print(type(model), model, type(steps), steps)
         for step in range(steps):
             self.step(model)
             model.collect_data(step)

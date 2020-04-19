@@ -24,29 +24,27 @@ class Model:
 
         self.activation = activation
 
-    def init_data(self):
-        #self._agent_df['agent'] = None
-        #self._agent_df['step'] = None
-        mi = pd.MultiIndex.from_product([[ 0 ], [ agent.id for agent in self._agents ]],
-                names = ['step', 'agent'])
-        self._agent_df = pd.DataFrame(index=mi)
-        for name, collector in self._agent_dcs.items():
-            self._agent_df[name] = None
+        self._agent_df = None
+        self._model_df = None
 
-        self._model_df = pd.DataFrame()
-        self._model_df['step'] = None
-        for name, collector in self._model_dcs.items():
-            self._model_df[name] = None
+    def init_data(self):
+        cols = ['step', ] + [ name for name in self._model_dcs]
+        self._model_data = { k:list() for k in cols }
+        cols = ['step', 'agent'] + [ name for name in self._agent_dcs]
+        self._agent_data = { k:list() for k in cols }
 
     def collect_data(self, step):
         """ Collect the data we need for each time step """
-        #print(f'step {step}: collecting data')
+        #print(f'collecting data for step {step}')
         for agent in self.agents():
+            self._agent_data['step'].append(step)
+            self._agent_data['agent'].append(agent.id)
             for name, collector in self._agent_dcs.items():
-                self._agent_df.loc[(step, agent.id), name] = collector(agent)
+                self._agent_data[name].append(collector(agent))
 
+        self._model_data['step'].append(step)
         for name, collector in self._model_dcs.items():
-            self._model_df.loc[step, name] = collector(self)
+            self._model_data[name].append(collector(self))
 
     @property
     def num_agents(self):
@@ -56,9 +54,21 @@ class Model:
         return iter(self._agents)
 
     def agent_data(self):
-        return self._agent_df
+        return self._agent_data
 
+    def agent_df(self):
+        if self._agent_df:
+            return self._agent_df
+        self._agent_df = pd.DataFrame.from_dict(self.agent_data())
+        return self._agent_df
+        
     def model_data(self):
+        return self._model_data
+
+    def model_df(self):
+        if self._model_df:
+            return self._model_df
+        self._model_df = pd.DataFrame.from_dict(self.model_data())
         return self._model_df
 
     ''' Methods below are expected to be overridden as needed '''
@@ -77,6 +87,10 @@ class Model:
 
     def update(self, agent):
         """ Integrate agent state changes """
+        pass
+
+    def end_of_step(self):
+        ''' Do any handling that needs to be done between steps '''
         pass
 
     def finish(self):
