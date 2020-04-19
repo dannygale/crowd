@@ -1,4 +1,5 @@
 
+from typing import *
 import multiprocessing as mp
 from collections import OrderedDict
 from threading import Thread
@@ -26,7 +27,7 @@ class StagedAgent(Agent):
     """ An Agent that supports multiple stages per step
     stages are traversed in order
     """
-    def __init__(self, uid:int, stages: OrderedDict[str,str] = None, *args, **kwargs):
+    def __init__(self, uid:int, stages: Dict[str,str] = None, *args, **kwargs):
         self.stages = stages
         for stage, method_name in self.stages.items():
             if not hasattr(self, method_name):

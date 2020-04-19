@@ -27,7 +27,9 @@ class BasicEngine(Engine):
         global_ctx = model.global_context()
         for agent in model.activate():
             #print(f'agent {agent.id}')
-            agent._step(global_ctx.update(model.agent_context(agent))))
+            agent_ctx = model.agent_context(agent)
+            global_ctx.update(agent_ctx)
+            agent._step(global_ctx)
             model.update(agent)
 
 

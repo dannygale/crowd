@@ -22,7 +22,7 @@ class Model:
         self._agent_dcs = agent_dcs if agent_dcs else {}
         self._model_dcs = model_dcs if model_dcs else {}
 
-        self.activate = activation
+        self.activation = activation
 
     def init_data(self):
         #self._agent_df['agent'] = None
@@ -62,14 +62,14 @@ class Model:
     def global_context(self):
         """ Generate the global context for each step. The same global context
         is passed to every agent """
-        pass
+        return {}
 
     def agent_context(self, agent):
         """ Generate the context for each agent for each step. The 
         global context is updated with the agent context and passed to the 
         agent as a single context. Duplicate keys in the global and agent 
         contexts will receive the value specified in the agent_context"""
-        pass
+        return {}
 
     def update(self, agent):
         """ Integrate agent state changes """
@@ -81,7 +81,7 @@ class Model:
 
     def activate(self):
         ''' Yield the agents in the order they should be run '''
-        pass
+        return self.activation(self._agents)
 
 
 
