@@ -18,7 +18,7 @@ class Model:
             model_dcs: Dict[str, Callable] = None,
             activation: Callable = basic_activation
             ):
-        self._agents = agents if agents else {}
+        self._agents = agents if agents else []
         self._agent_dcs = agent_dcs if agent_dcs else {}
         self._model_dcs = model_dcs if model_dcs else {}
 
@@ -47,6 +47,10 @@ class Model:
 
         for name, collector in self._model_dcs.items():
             self._model_df.loc[step, name] = collector(self)
+
+    @property
+    def num_agents(self):
+        return len(self._agents)
 
     def agents(self):
         return iter(self._agents)
